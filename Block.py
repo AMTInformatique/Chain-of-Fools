@@ -1,7 +1,15 @@
+import hashlib
+import json
 from time import time
 
 class Blockchain(object):
-    def __init__(self):
+    """
+    Blockchain est la classe définissant et gère la séquence immuable de blocks.
+
+    :param object: [description]
+    :type object: [type]
+    """    
+    def __init__(self): 
         self.chain = []
         self.current_transactions = []    
         # créer le premier block
@@ -9,10 +17,14 @@ class Blockchain(object):
         
     def new_block(self, proof, previous_hash=None,):
         """
-        Créer un nouveau block dans la blockchain
-        :param proof: <int> La preuve donnée par l'algorithme de preuve de travail
-        :param previous_hash: (Optionel) <str> Hash du block précédent 
-        :return: <dict> nouveau block
+        new_block Créer un nouveau block dans la blockchain
+
+        :param proof: La preuve donnée par l'algorithme de preuve de travail
+        :type proof: <int>
+        :param previous_hash: Hash du block précédent, par défaut: None
+        :type previous_hash: <str>, optional
+        :return: nouveau block
+        :rtype: <dict>
         """
 
         block = {
@@ -30,11 +42,16 @@ class Blockchain(object):
     
     def new_transaction(self, sender, recipient, amount):
         """
-        créer une nouvelle transaction qui ira dans le block miner
-        :param sender: <str> l'adresse de l'émetteur
-        :param recipient: <str> l'adresse du bénéficiaire
-        :param amount: <int> quantité
-        :return: <int> L'index du bloc qui contiendra cette transaction
+        new_transaction créer une nouvelle transaction qui ira dans le block miné
+
+        :param sender: l'adresse de l'émetteur
+        :type sender: <str>
+        :param recipient: l'adresse du bénéficiaire
+        :type recipient: <str>
+        :param amount: quantité
+        :type amount: <int>
+        :return: L'index du bloc qui contiendra cette transaction
+        :rtype: <int>
         """
 
         self.current_transactions.append({
@@ -47,12 +64,28 @@ class Blockchain(object):
     
     @staticmethod
     def hash(block):
-        # hashe un block
-        pass
+        """
+        hash crée un hachage SHA-256 d'un bloc
+
+        :param block: un block
+        :type block: <dict>
+        :return: hash
+        :rtype: <str>
+        """
+        # Le dictionnaire doit être ordonné, sinon il y aura des hachages incohérents
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
 
     @property
     def last_block(self):
-        # retourn le dernier block de la chaine
+        """
+        last_block renvoie le dernier block de la chaine
+
+        :return: un block
+        :rtype: dict
+        """        
+        # 
+        return self.chain[-1]
         pass
     
 
