@@ -1,4 +1,4 @@
-import hashlib
+from hashlib import sha256
 import json
 from time import time
 
@@ -62,12 +62,52 @@ class Blockchain(object):
 
         return self.last_block['index'] + 1
     
+    def proof_of_work(self, last_block):
+        """
+        Algorithme de preuve de travail:
+
+         - Trouver un nombre j tel que le hachage (i*j) contient les 4 premiers zéros
+         - i est la preuve précédente, et j est la nouvelle preuve
+
+        :param last_block: dernierblock miné
+        :type last_proof: <dict>
+        :return: nouvelle preuve de travail
+        :rtype: <int>
+        """
+        
+        last_proof = last_block['proof']
+        last_hash = self.hash(last_block)
+        
+        proof = 0
+        while self.valid_proof(last_proof, proof) is False:
+            proof += 1
+
+        return proof
+
+    @staticmethod
+    def valid_proof(last_proof, proof):
+        """
+        valid_proof valide la preuve
+        
+        Vérifie que le hash(dernière preuve, preuve) termine par 4 zéros.
+
+        :param last_proof: dernière preuve de travail
+        :type last_proof: <int>
+        :param proof: preuve de travail actuelle
+        :type proof: <int>
+        :return: [description]
+        :rtype: <bool>
+        """        
+        guess = f'{last_proof}{proof}'.encode()
+        guess_hash = sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
+######
     @staticmethod
     def hash(block):
         """
         hash crée un hachage SHA-256 d'un bloc
 
-        :param block: un block
+        :param block: le block
         :type block: <dict>
         :return: hash
         :rtype: <str>
@@ -84,8 +124,4 @@ class Blockchain(object):
         :return: un block
         :rtype: dict
         """        
-        # 
         return self.chain[-1]
-        pass
-    
-
