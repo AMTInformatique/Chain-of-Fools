@@ -146,7 +146,7 @@ app = Flask(__name__)
 # uuid 4 sera plus aléatoire que uuid1
 node_identifier = str(uuid4()).replace('-', '')
 
-# Instantiate the Blockchain
+# Instantie la Blockchain
 blockchain = Blockchain()
 
 
@@ -156,7 +156,27 @@ def mine():
   
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
-    return "Ajout d'une nouvelle transaction"
+    """
+    new_transaction définie la requète POST pour une nouvelle transaction
+
+    Vérifie que les valeurs demandée sont dans les données 
+    envoyées en POST et créé une nouvelle transaction dans un block
+    
+    :return: réponse en JSON
+    :rtype: <dict>
+    """    
+    valeurs = request.get_json()
+
+    # Vérifie que les valeurs demandée sont dans les données envoyées en POST
+    demande = ['sender', 'recipient', 'amount']
+    if not all(k in valeurs for k in demande):
+        return 'Valeurs manquantes', 400
+
+    # créé une nouvelle transaction
+    index = blockchain.new_transaction(valeurs['sender'], valeurs['recipient'], valeurs['amount'])
+
+    reponse = {'message': f'Ajout d\'une nouvelle transaction au block {index}'}
+    return jsonify(reponse), 201
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
@@ -164,7 +184,8 @@ def full_chain():
         'chain': blockchain.chain,
         'length': len(blockchain.chain),
     }
-    return jsonify(response), 200
+    # https://flask.palletsprojects.com/en/1.1.x/api/#flask.json.jsonify
+    return jsonify(reponse), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
