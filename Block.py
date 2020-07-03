@@ -1,8 +1,14 @@
 from hashlib import sha256
 import json
 from time import time
+from uuid import uuid4
+from flask import Flask, jsonify, request
 
-class Blockchain(object):
+##########################################
+############ CLASS BLOCKCHAIN ############
+##########################################
+
+class Blockchain:
     """
     Blockchain est la classe définissant et gère la séquence immuable de blocks.
 
@@ -14,7 +20,34 @@ class Blockchain(object):
         self.current_transactions = []    
         # créer le premier block
         self.new_block(proof=100, previous_hash=1)
-        
+    
+    @property
+    def last_block(self):
+        """
+        last_block renvoie le dernier block de la chaine
+
+        :return: un block
+        :rtype: dict
+        """        
+        return self.chain[-1]
+    
+    @staticmethod
+    def hash(block):
+        """
+        hash crée un hachage SHA-256 d'un bloc
+
+        :param block: le block
+        :type block: <dict>
+        :return: hash
+        :rtype: <str>
+        """
+        # Le dictionnaire 'block' doit être ordonné, sinon il y aura des hachages incohérents
+        # puis converti en bytes pour être haché
+        block_string = json.dumps(block, sort_keys=True).encode()
+        #renvoie une chaine de caractère composée d'hex
+        # NB: sha256 n'est pas le meilleur algo d'hashage
+        return sha256(block_string).hexdigest()
+
     def new_block(self, proof, previous_hash=None,):
         """
         new_block Créer un nouveau block dans la blockchain
@@ -37,6 +70,7 @@ class Blockchain(object):
 
         # RàZ de la list courante des transactions
         self.current_transactions = []
+        
         self.chain.append(block)
         return block
     
@@ -61,7 +95,25 @@ class Blockchain(object):
         })
 
         return self.last_block['index'] + 1
-    
+
+    @staticmethod
+    def valid_proof(last_proof, proof):
+        """
+        valid_proof valide la preuve
+        
+        Vérifie que le hash('dernière_preuve'+'preuve') termine par 4 zéros.
+
+        :param last_proof: dernière preuve de travail
+        :type last_proof: <int>
+        :param proof: preuve de travail actuelle
+        :type proof: <int>
+        :return: True si les 4 derniers chiffres sont '0000'
+        :rtype: <bool>
+        """        
+        guess = f'{last_proof}{proof}'.encode()
+        guess_hash = sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
+
     def proof_of_work(self, last_block):
         """
         Algorithme de preuve de travail:
@@ -83,44 +135,36 @@ class Blockchain(object):
 
         return proof
 
-    @staticmethod
-    def valid_proof(last_proof, proof):
-        """
-        valid_proof valide la preuve
-        
-        Vérifie que le hash(dernière preuve, preuve) termine par 4 zéros.
+##########################################
+############### NODE FLASK ###############
+##########################################
 
-        :param last_proof: dernière preuve de travail
-        :type last_proof: <int>
-        :param proof: preuve de travail actuelle
-        :type proof: <int>
-        :return: [description]
-        :rtype: <bool>
-        """        
-        guess = f'{last_proof}{proof}'.encode()
-        guess_hash = sha256(guess).hexdigest()
-        return guess_hash[:4] == "0000"
-######
-    @staticmethod
-    def hash(block):
-        """
-        hash crée un hachage SHA-256 d'un bloc
+# Initialisation du node Node
+app = Flask(__name__)
 
-        :param block: le block
-        :type block: <dict>
-        :return: hash
-        :rtype: <str>
-        """
-        # Le dictionnaire doit être ordonné, sinon il y aura des hachages incohérents
-        block_string = json.dumps(block, sort_keys=True).encode()
-        return hashlib.sha256(block_string).hexdigest()
+# Générer une adresse unique pour ce nœud
+# uuid 4 sera plus aléatoire que uuid1
+node_identifier = str(uuid4()).replace('-', '')
 
-    @property
-    def last_block(self):
-        """
-        last_block renvoie le dernier block de la chaine
+# Instantiate the Blockchain
+blockchain = Blockchain()
 
-        :return: un block
-        :rtype: dict
-        """        
-        return self.chain[-1]
+
+@app.route('/mine', methods=['GET'])
+def mine():
+    return "Minage d'un nouveau block"
+  
+@app.route('/transactions/new', methods=['POST'])
+def new_transaction():
+    return "Ajout d'une nouvelle transaction"
+
+@app.route('/chain', methods=['GET'])
+def full_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+    }
+    return jsonify(response), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
