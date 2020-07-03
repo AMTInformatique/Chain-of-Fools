@@ -99,13 +99,17 @@ class Blockchain:
     @staticmethod
     def valid_proof(last_proof, proof):
         """
-        valid_proof valide la preuve
+        valid_proof valide la preuve. Pour que la preuve soit validée,
+        il faut trouver un nombre j tel que le hachage de la chaine (ij)
+        se termine par 4 zéro.
         
-        Vérifie que le hash('dernière_preuve'+'preuve') termine par 4 zéros.
+        - encode en bytes la chaine ('dernière_preuve''preuve')
+        - on en fait du hachi(parmentier) puis on la transforme en chaine hexa
+        - Vérifie que le hash('dernière_preuve'+'preuve') termine par 4 zéros.
 
         :param last_proof: dernière preuve de travail
         :type last_proof: <int>
-        :param proof: preuve de travail actuelle
+        :param proof: nouvelle preuve de travail
         :type proof: <int>
         :return: True si les 4 derniers chiffres sont '0000'
         :rtype: <bool>
@@ -118,8 +122,8 @@ class Blockchain:
         """
         Algorithme de preuve de travail:
 
-         - Trouver un nombre j tel que le hachage (i*j) contient les 4 premiers zéros
-         - i est la preuve précédente, et j est la nouvelle preuve
+         - tant que la nouvelle preuve de travail n'est pas trouvé par le mineur,
+        elle est incrémenté de 1
 
         :param last_block: dernierblock miné
         :type last_proof: <dict>
@@ -152,27 +156,55 @@ blockchain = Blockchain()
 
 @app.route('/mine', methods=['GET'])
 def mine():
-    return "Minage d'un nouveau block"
+    """
+    mine définie la requète GET
+
+    :return: réponse en JSON
+    :rtype: <dict>
+    """    
+    # exécute l'algorithme de preuve de travail pour obtenir la prochaine preuve
+    last_block = blockchain.last_block
+    proof = blockchain.proof_of_work(last_block)
+
+    # recevoir une récompense (un coin/pièce) pour avoir trouvé la preuve.
+    # L'expéditeur est "0" pour signifier que ce nœud a extrait une nouvelle pièce/coin.
+    blockchain.new_transaction(
+        sender="0",
+        recipient=node_identifier,
+        amount=1,
+    )
+
+    # fabrique le nouveau bloc en l'ajoutant à la chaîne
+    previous_hash = blockchain.hash(last_block)
+    block = blockchain.new_block(proof, previous_hash)
+
+    reponse = {
+        'message': "Nouveau block miné",
+        'index': block['index'],
+        'transactions': block['transactions'],
+        'proof': block['proof'],
+        'previous_hash': block['previous_hash'],
+    }
+    return jsonify(reponse), 200
   
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     """
     new_transaction définie la requète POST pour une nouvelle transaction
 
-    Vérifie que les valeurs demandée sont dans les données 
-    envoyées en POST et créé une nouvelle transaction dans un block
+    - Vérifie que les valeurs demandée sont dans les données 
+    envoyées en POST
+    - créé une nouvelle transaction dans un block
     
     :return: réponse en JSON
     :rtype: <dict>
     """    
     valeurs = request.get_json()
 
-    # Vérifie que les valeurs demandée sont dans les données envoyées en POST
     demande = ['sender', 'recipient', 'amount']
     if not all(k in valeurs for k in demande):
         return 'Valeurs manquantes', 400
 
-    # créé une nouvelle transaction
     index = blockchain.new_transaction(valeurs['sender'], valeurs['recipient'], valeurs['amount'])
 
     reponse = {'message': f'Ajout d\'une nouvelle transaction au block {index}'}
@@ -180,7 +212,7 @@ def new_transaction():
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
-    response = {
+    reponse = {
         'chain': blockchain.chain,
         'length': len(blockchain.chain),
     }
