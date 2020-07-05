@@ -148,7 +148,7 @@ class Blockchain:
 
     def register_node(self, address):
         """
-        register_node ajoute un nouveau node à la liste des nodes
+        register_node ajoute un nouveau node à la liste des nodes.
 
         :param address: l'adresse IP du node. Ex: 'http://192.168.0.5:5000'
         :type address: <str>
@@ -158,7 +158,8 @@ class Blockchain:
     
     def valid_chain(self, chain):
         """
-        valid_chain détermine si une chaine est valide.
+        valid_chain détermine si une chaine est valide, en vérifiant
+        chaque block.
         
         - Vérifie que 'previous_hash' contenu dans le block courant,
           correspond au hachage du block précédent.
@@ -183,8 +184,8 @@ class Blockchain:
 
             if not self.valid_proof(last_block['proof'], block['proof']):
                 return False
-            print("\n-----------\n")
             
+            print("\n-----------\n")
             last_block = block
             current_index += 1
 
@@ -192,28 +193,25 @@ class Blockchain:
 
     def algo_cansensus(self):
         """
-        algo_cansensus est l'algorithme de consensus de la blockchain.
+        algo_cansensus est l'algorithme qui permet un consensus sur la blockchain.
         
-        La plus longue chaine valide du réseau doit être la chaine par
-        défaut.
+        La méthode va parcourir tous les nœuds pour trouver la plus longue
+        chaine valide du réseau: elle deviendra la chaine par défaut.
+        Cette méthode s'initialise sur le nœud courrant.
         
-        - Vérifie le statuts des nœuds/nodes du réseau
-        - Vérifie la validité des chaines présentent, à l'aire de la 
+        - Vérifie le statuts des nœuds/nodes du réseau.
+        - Vérifie la validité des chaines présentes, à l'aide de la 
           méthode valid_chain.
-        - Stock dans la blockchain la chaine la plus longue
+        - Stock dans la blockchain la chaine la plus longue.
 
-        :return: False si il n'y a aucun concensus sur le réseau de
-        la blockchain, sinon True.
+        :return: True si l'algorithme a trouvé une plus gande chaine, sinon False.
         :rtype: <bool>
         """
 
         neighbours = self.nodes
         new_chain = None
-
-        # We're only looking for chains longer than ours
         max_length = len(self.chain)
 
-        # Grab and verify the chains from all the nodes in our network
         for node in neighbours:
             response = requests.get(f'http://{node}/chain')
 
@@ -221,12 +219,10 @@ class Blockchain:
                 length = response.json()['length']
                 chain = response.json()['chain']
 
-                # Check if the length is longer and the chain is valid
                 if length > max_length and self.valid_chain(chain):
                     max_length = length
                     new_chain = chain
 
-        # Replace our chain if we discovered a new, valid chain longer than ours
         if new_chain:
             self.chain = new_chain
             return True
@@ -241,7 +237,7 @@ class Blockchain:
 app = Flask(__name__)
 
 # Générer une adresse unique pour ce nœud
-# uuid4 est globalement plus aléatoire que uuid1
+# uuid4 est globalement plus aléatoire/unique que uuid1
 node_identifier = str(uuid4()).replace('-', '')
 
 # Instantie la Blockchain
@@ -261,7 +257,8 @@ def mine():
     - Fabrique le nouveau bloc en l'ajoutant à la chaîne
     
     :return: réponse en JSON contenant les informations sur le nouveau
-    block et le hash précédent (immuabilité de la blockchain) + code 200 OK
+    block et le hash précédent (immuabilité de la blockchain),
+    et un code 200 OK.
     :rtype: <JSON>
     """
     last_block = blockchain.last_block
@@ -272,20 +269,9 @@ def mine():
         recipient=node_identifier,
         amount=1,
     )
-#vérifie que le hash du dernier block est valide
-#     if 'hash' in last_block:
-#          dernier_block = last_block.copy()
-#          dernier_block.pop('hash')
-#          dernier_hash = blockchain.hachage(dernier_block)
-
-#     if dernier_hash != last_block['hash']:
-#         return 'Erreur de hashage', 403
-#     else:
 
     previous_hash = blockchain.hachage(last_block)
     block = blockchain.new_block(proof, previous_hash)
-        # current_hash = blockchain.hachage(block)
-        # block['hash'] = current_hash
 
     reponse = {
         'message': "Nouveau block miné",
@@ -299,14 +285,16 @@ def mine():
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     """
-    new_transaction permet d'ajouter les données d'une nouvelle transaction.
+    new_transaction permet d'ajouter les données d'une
+    nouvelle transaction, en format JSON.
     Elle est déclenchée par le endpoint /transactions/new (requête POST).
 
     - Vérifie que les valeurs demandée dans la requête sont dans les données
       envoyées en POST. Renvoie un code 400 Bad Request, le cas échéant.
     - Créé une nouvelle transaction dans un block
     
-    :return: réponse en JSON contenant un message + code 201 Created
+    :return: réponse en JSON contenant un message de confirmation
+    et un code 201 Created.
     :rtype: <JSON>
     """    
     valeurs = request.get_json()
@@ -315,18 +303,23 @@ def new_transaction():
     if not all(k in valeurs for k in demande):
         return 'Valeurs manquantes', 400
 
-    index = blockchain.new_transaction(valeurs['sender'], valeurs['recipient'], valeurs['amount'])
+    index = blockchain.new_transaction (
+                valeurs['sender'],
+                valeurs['recipient'],
+                valeurs['amount'],
+            )
 
     reponse = {'message': f'Ajout d\'une nouvelle transaction au block {index}'}
     return jsonify(reponse), 201
 
-@app.route('/chain', methods=['GET'])
+@app.route('/chain_of_fools', methods=['GET'])
+# https://youtu.be/gGAiW5dOnKo
 def full_chain():
     """
     full_chain permet d'obtenir toute la chaine et sa longueur.
-    Elle est déclenchée par le endpoint /chain (requête GET).
+    Elle est déclenchée par le endpoint /chain_of_fools (requête GET).
 
-    :return: réponse en JSON contenant la chaine et sa longueur + code 201 Created
+    :return: réponse en JSON contenant la chaine et sa longueur + code 200 OK
     :rtype: <JSON>
     """    
     reponse = {
@@ -335,5 +328,60 @@ def full_chain():
     }
     return jsonify(reponse), 200
 
+@app.route('/nodes/register', methods=['POST'])
+def register_nodes():
+    """
+    register_nodes permet d'enregistrer au moins un nouveau node,
+    en format JSON.
+    Elle est déclenchée par le endpoint /nodes/register (requête POST).
+    
+    - Vérifie que les valeurs envoyé dans la requête POST existe.
+      Renvoie un code 400 Bad Request, le cas échéant.
+    - enregistre les nodes grace à la méthode register_node
+
+    :return: réponse en JSON contenant un message de confirmation,
+    la liste des nodes et un code 201 Created.
+    :rtype: <JSON>
+    """    
+    values = request.get_json()
+
+    nodes = values.get('nodes')
+    if nodes is None:
+        return "Erreur: Veuillez fournir une liste valide de nœuds", 400
+
+    for node in nodes:
+        blockchain.register_node(node)
+
+    response = {
+        'message': 'Au mois un nouveau node a été ajouté.',
+        'total_nodes': list(blockchain.nodes),
+    }
+    return jsonify(response), 201
+
+
+@app.route('/nodes/resolve', methods=['GET'])
+def consensus():
+    """
+    consensus regarde si la chaine courante fait consensus.
+    Elle est déclenchée par le endpoint /nodes/resolve (requête GET).
+
+    :return: réponse en JSON contenant un message spécifiant la chaine
+    faisant autorité, et un code 200 OK.
+    :rtype: <JSON>
+    """    
+    replaced = blockchain.algo_cansensus()
+
+    if replaced:
+        response = {
+            'message': 'La chaine courante a été remplacée.',
+            'new_chain': blockchain.chain
+        }
+    else:
+        response = {
+            'message': 'La chaine courante fait authorité.',
+            'chain': blockchain.chain
+        }
+
+    return jsonify(response), 200
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
