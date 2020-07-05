@@ -1,5 +1,8 @@
-from hashlib import sha256
+import requests
 import json
+
+from hashlib import sha256
+from urllib.parse import urlparse
 from time import time
 from uuid import uuid4
 from flask import Flask, jsonify, request
@@ -17,6 +20,8 @@ class Blockchain:
         self.current_transactions = []    
         # créer le premier block
         self.new_block(proof=1989, previous_hash=1)
+        # créer une liste de nodes
+        self.nodes = set()
 
     @property
     def last_block(self):
@@ -29,12 +34,12 @@ class Blockchain:
         return self.chain[-1]
 
     @staticmethod
-    def hash(block):
+    def hachage(block):
         """
         hash crée un hachage SHA-256 d'un bloc.
         
         - Sérialise le <dict: block> en une <str> formatée en JSON,
-        puis encode la <str> en bytes pour être haché.
+          puis encode la <str> en bytes pour être haché.
         NB: La <str> doit être ordonnée, selon les clés du <dict: block>,
         sinon il y aura des hachages incohérents.
         - Hache la chaine puis renvoie une <str> composée d'hex
@@ -42,7 +47,7 @@ class Blockchain:
         
         :param block: le block
         :type block: <dict>
-        :return: hash
+        :return: hach
         :rtype: <str>
         """
 
@@ -57,8 +62,8 @@ class Blockchain:
         tel que le hachage de la chaine (ij) se termine par 4 zéros.
         
         - Encode en bytes la chaine ('dernière_preuve''preuve').
-        - On en fait du hachi(parmentier) puis la transforme en chaine hexa.
-        - Vérifie que le hash termine par 4 zéros.
+        - Fait du hachi(parmentier) puis la transforme en chaine hexa.
+        - Vérifie que le hach termine par 4 zéros.
 
         :param last_proof: dernière preuve de travail.
         :type last_proof: <int>
@@ -75,7 +80,7 @@ class Blockchain:
         """
         Algorithme de preuve de travail.
 
-        - Tant que la nouvelle preuve de travail n'est pas trouvé par
+        - Tant que la nouvelle preuve de travail n'est pas trouvée par
           le mineur, elle est incrémenté de 1.
 
         :param last_block: Dernier block miné.
@@ -109,7 +114,7 @@ class Blockchain:
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
-            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+            'previous_hash': previous_hash or self.hachage(self.chain[-1]),
         }
 
         # RàZ de la liste courante des transactions
@@ -141,9 +146,96 @@ class Blockchain:
 
         return self.last_block['index'] + 1
 
-##########################################
-############### NODE EN FLASK ###############
-##########################################
+    def register_node(self, address):
+        """
+        register_node ajoute un nouveau node à la liste des nodes
+
+        :param address: l'adresse IP du node. Ex: 'http://192.168.0.5:5000'
+        :type address: <str>
+        """        
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
+    
+    def valid_chain(self, chain):
+        """
+        valid_chain détermine si une chaine est valide.
+        
+        - Vérifie que 'previous_hash' contenu dans le block courant,
+          correspond au hachage du block précédent.
+        - Vérifie la preuve de travail grace à la méthode valid_proof.
+
+        :param chain: La blockchain
+        :type chain: <list>
+        :return: True or false
+        :rtype: <bool>
+        """        
+
+        last_block = chain[0]
+        current_index = 1
+
+        while current_index < len(chain):
+            block = chain[current_index]
+            print(f'{last_block}')
+            print(f'{block}')
+
+            if block['previous_hash'] != self.hachage(last_block):
+                return False
+
+            if not self.valid_proof(last_block['proof'], block['proof']):
+                return False
+            print("\n-----------\n")
+            
+            last_block = block
+            current_index += 1
+
+        return True
+
+    def algo_cansensus(self):
+        """
+        algo_cansensus est l'algorithme de consensus de la blockchain.
+        
+        La plus longue chaine valide du réseau doit être la chaine par
+        défaut.
+        
+        - Vérifie le statuts des nœuds/nodes du réseau
+        - Vérifie la validité des chaines présentent, à l'aire de la 
+          méthode valid_chain.
+        - Stock dans la blockchain la chaine la plus longue
+
+        :return: False si il n'y a aucun concensus sur le réseau de
+        la blockchain, sinon True.
+        :rtype: <bool>
+        """
+
+        neighbours = self.nodes
+        new_chain = None
+
+        # We're only looking for chains longer than ours
+        max_length = len(self.chain)
+
+        # Grab and verify the chains from all the nodes in our network
+        for node in neighbours:
+            response = requests.get(f'http://{node}/chain')
+
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+
+                # Check if the length is longer and the chain is valid
+                if length > max_length and self.valid_chain(chain):
+                    max_length = length
+                    new_chain = chain
+
+        # Replace our chain if we discovered a new, valid chain longer than ours
+        if new_chain:
+            self.chain = new_chain
+            return True
+
+        return False
+
+###########################################
+############## lance-requête ##############
+###########################################
 
 # Initialisation du node 
 app = Flask(__name__)
@@ -163,7 +255,7 @@ def mine():
     Elle est déclenchée par le endpoint /mine (requête GET)
     
     - exécute l'algorithme de preuve de travail.
-    - reçoit une récompense (un coin/pièce) pour avoir trouvé la preuve.
+    - reçoit une récompense (un coin/une pièce) pour avoir trouvé la preuve.
     - L'expéditeur est "0" pour signifier que c'est le nœud qui a extrait
       une nouvelle pièce/coin.
     - Fabrique le nouveau bloc en l'ajoutant à la chaîne
@@ -180,9 +272,20 @@ def mine():
         recipient=node_identifier,
         amount=1,
     )
+#vérifie que le hash du dernier block est valide
+#     if 'hash' in last_block:
+#          dernier_block = last_block.copy()
+#          dernier_block.pop('hash')
+#          dernier_hash = blockchain.hachage(dernier_block)
 
-    previous_hash = blockchain.hash(last_block)
+#     if dernier_hash != last_block['hash']:
+#         return 'Erreur de hashage', 403
+#     else:
+
+    previous_hash = blockchain.hachage(last_block)
     block = blockchain.new_block(proof, previous_hash)
+        # current_hash = blockchain.hachage(block)
+        # block['hash'] = current_hash
 
     reponse = {
         'message': "Nouveau block miné",
