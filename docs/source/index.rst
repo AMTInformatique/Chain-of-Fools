@@ -1,22 +1,32 @@
+==========================================
 Welcome to Chain of Fools's documentation!
 ==========================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-.. automodule:: Block
-    :members:
-
-
-.. autosummary::
-   :nosignatures:
-   :toctree: generated/
-
-
-Indices and tables
+Sommaire
 ==================
 
-* :ref:`genindex`
+.. autosummary::
+   :toctree: stubs
+
+
+
+* :ref:`Glossaire <genindex>`
 * :ref:`modindex`
 * :ref:`search`
+
+______________________________________
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Contents:
+
+
+.. automodule:: Block
+   :members:
+
+
+
+
+
+
+

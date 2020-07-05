@@ -32,13 +32,15 @@ class Blockchain:
 
         :return: un block
         :rtype: <dict>
-        
-        """        
+
+        """
+           
         return self.chain[-1]
 
     @staticmethod
     def hachage(block):
-        """
+        """  
+          
         hash crée un hachage SHA-256 d'un bloc.
         
         - Sérialise le <dict: block> en une <str> formatée en JSON, puis encode la <str> en bytes pour être haché.
