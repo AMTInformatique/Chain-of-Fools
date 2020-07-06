@@ -68,7 +68,7 @@ Pour ce faire, il faut envoyer une requête `GET` à l'adresse `http://localhost
 
 ### Enregistrer des transaction
 En suivant la nomenclature du format JSON, ajouter dans le `Body` de la requête:
-```JSON
+```
 {
  "sender": "adresse de l'émetteur",
  "recipient": "adresse du bénéficiaire",
