@@ -4,7 +4,7 @@
 ---
 ## Avant-propos
 
-Mon but: créer une blockchaine, en 🐍python🐍, en moins d'une semaine.
+Mon but: créer une blockchain, en 🐍python🐍, en moins d'une semaine.
 Il s'agit de mon premier gros projet, en python, il m'a permis de progresser et d'apprendre de mes erreurs.
 J'y ai découvert Flask, les algorithmes de hachages, j'ai écris des kilomètres de docstrings.  
 Soyez indulgent.e 😁.
