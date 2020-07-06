@@ -107,7 +107,7 @@ Cette liste n'est pas exhaustive:
 - Améliorer la sécurité des nodes (une vraie passoire...).  
 ## FAQ
 
->Pourquoi une blockchaine ?  
+>Pourquoi une blockchain ?  
 
 [Parce que :)](https://youtu.be/gGAiW5dOnKo)
 
