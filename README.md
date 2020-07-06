@@ -1,9 +1,16 @@
 # Chain of Fools
 
-[![image](https://img.shields.io/github/license/Sam-prog-sudo/sam.github.io?style=flat-square)](https://youtu.be/gGAiW5dOnKo)
+[![image](https://img.shields.io/github/license/Sam-prog-sudo/sam.github.io?style=flat-square)](https://github.com/Sam-prog-sudo/Chain-of-Fools/blob/master/LICENSE)
 ---
+## Avant-propos
+
+Mon but: créer une blockchaine, en 🐍python🐍, en moins d'une semaine
+Il s'agit de mon premier gros projet, en python, il m'a permis de progresser et d'apprendre de mes erreurs.
+Soyez indulgent.e 😁.
+
 ## Table des matières
 
+- [Avant-propos](#avant-propos)
 - [Installation](#installation)
   - [Prérequis](#prérequis)
   - [Code source](#code-source)
@@ -14,7 +21,8 @@
   - [Obtenir la blockchain](#obtenir-la-blockchain)
   - [Enregistrer un node](#enregistrer-un-node)
   - [Consensus de la blockchain](#consensus-de-la-blockchain)
-- [License](https://github.com/Sam-prog-sudo/Chain-of-Fools/blob/master/LICENSE)
+- [FAQ](#faq)
+- [License](#license)
 ---
 ## Installation
 ### Prérequis
@@ -51,10 +59,11 @@ pipenv run python blockchain.py -p 5001
 pipenv run python blockchain.py --port 5002
 ```
 ### Miner un block
-Envoyer une requête `GET` à l'adresse `http://localhost:[numéro-de-port]/mine`.  
+Pour miner un nouveau block, il faut trouver la nouvelle preuve de travail.
+Pour ce faire, il faut envoyer une requête `GET` à l'adresse `http://localhost:[numéro-de-port]/mine`.  
 
 ### Enregistrer des transaction
-En suivant la nomenclature du format JSON, ajouter dans le `Body`de la requète:
+En suivant la nomenclature du format JSON, ajouter dans le `Body` de la requête:
 ```JSON
 {
  "sender": "adresse de l'émetteur",
@@ -82,3 +91,16 @@ Pour enregistrer un nouveau node sur le réseau, il faut envoyer la requête `PO
 >Dans le cas où il y aurait plusieurs nodes, cette requête permet d'assurer la validité de la chaine, à l'aide d'un algorithme de consensus.  
 
 Pour s'assurer que le node courant détient la chaine la plus à jour (donc la plus longue), il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes/resolve`.
+
+## FAQ
+
+>Pourquoi une blockchain ?  
+
+[Parce que :)](https://youtu.be/gGAiW5dOnKo)
+
+>Euh ... les p'tites blagues dans le code, c'est normal ?  
+
+😅  
+
+## License
+**[MIT license](http://opensource.org/licenses/mit-license.php)**
