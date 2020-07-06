@@ -4,8 +4,9 @@
 ---
 ## Avant-propos
 
-Mon but: créer une blockchaine, en 🐍python🐍, en moins d'une semaine
+Mon but: créer une blockchaine, en 🐍python🐍, en moins d'une semaine.
 Il s'agit de mon premier gros projet, en python, il m'a permis de progresser et d'apprendre de mes erreurs.
+J'y ai découvert Flask, les algorithmes de hachages, j'ai écris des kilomètres de docstrings, 
 Soyez indulgent.e 😁.
 
 ## Table des matières
@@ -21,6 +22,7 @@ Soyez indulgent.e 😁.
   - [Obtenir la blockchain](#obtenir-la-blockchain)
   - [Enregistrer un node](#enregistrer-un-node)
   - [Consensus de la blockchain](#consensus-de-la-blockchain)
+- [Améliorations possibles](#améliorations-possibles)
 - [FAQ](#faq)
 - [License](#license)
 ---
@@ -41,8 +43,10 @@ pipenv install -r requirements.txt
 ``` 
 ### Code source
 Plusieur solutions s'offre à vous:  
-- Cloner ce repo sur votre machine local à l'aide de cette adresse: `https://github.com/fvcproductions/SOMEREPO`.  
-- Forker ce repo.
+- 👯Cloner ce repo sur votre machine local à l'aide de cette adresse: `https://github.com/fvcproductions/SOMEREPO`.  
+- 🍴Forker ce repo.
+>C'est une invitation à la contribution👋
+
 ----
 ## Utilisation
 Lancer un Shell pour la création de nodes puis lancer Postman pour l'envoie de requêtes.  
@@ -68,7 +72,7 @@ En suivant la nomenclature du format JSON, ajouter dans le `Body` de la requête
 {
  "sender": "adresse de l'émetteur",
  "recipient": "adresse du bénéficiaire",
- "amount": quantité émise
+ "amount": quantité-émise (un entier),
 }
 ```
 Puis, envoyer la requête `POST` à l'adresse `http://localhost:[numéro-de-port]/transactions/new`. 
@@ -92,9 +96,17 @@ Pour enregistrer un nouveau node sur le réseau, il faut envoyer la requête `PO
 
 Pour s'assurer que le node courant détient la chaine la plus à jour (donc la plus longue), il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes/resolve`.
 
+## Améliorations possibles
+Cette liste n'est pas exhaustive:
+- créer des nodes qui vérifient les transactions.  
+- Améliorer l'algorithme de travail.  
+- Améliorer l'algorithme de hashage.  
+- Permettre une saugarde physique de la blockchain.  
+- Stocker d'autres informations sur la blockchain (hors cryptomonnaie).  
+- Améliorer la sécurité des nodes (une vraie passoire...).  
 ## FAQ
 
->Pourquoi une blockchain ?  
+>Pourquoi une blockchaine ?  
 
 [Parce que :)](https://youtu.be/gGAiW5dOnKo)
 
