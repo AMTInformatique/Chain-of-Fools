@@ -98,7 +98,8 @@ Pour s'assurer que le node courant détient la chaine la plus à jour (donc la p
 
 ## Améliorations possibles
 Cette liste n'est pas exhaustive:
-- créer des nodes qui vérifient les transactions.  
+- Créer des nodes qui vérifient les transactions.  
+- Gérer les erreurs de 'requests'.
 - Améliorer l'algorithme de travail.  
 - Améliorer l'algorithme de hashage.  
 - Permettre une saugarde physique de la blockchain.  
