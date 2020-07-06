@@ -34,7 +34,7 @@ pipenv install -r requirements.txt
 ### Code source
 Plusieur solutions s'offre à vous:  
 - Cloner ce repo sur votre machine local à l'aide de cette adresse: `https://github.com/fvcproductions/SOMEREPO`.  
-- 
+- Forker ce repo.
 ----
 ## Utilisation
 Lancer un Shell pour la création de nodes puis lancer Postman pour l'envoie de requêtes.  
