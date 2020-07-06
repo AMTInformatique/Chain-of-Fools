@@ -1,5 +1,6 @@
 import requests
 import json
+from argparse import ArgumentParser
 
 from hashlib import sha256
 from urllib.parse import urlparse
@@ -13,9 +14,7 @@ from flask import Flask, jsonify, request
 
 class Blockchain:
     """
-    
     Blockchain est la classe mère: elle gère la séquence immuable de blocks.
-    
     """    
     def __init__(self): 
         self.chain = []
@@ -32,15 +31,12 @@ class Blockchain:
 
         :return: un block
         :rtype: <dict>
-
         """
-           
         return self.chain[-1]
 
     @staticmethod
     def hachage(block):
-        """  
-          
+        """
         hash crée un hachage SHA-256 d'un bloc.
         
         - Sérialise le <dict: block> en une <str> formatée en JSON, puis encode la <str> en bytes pour être haché.
@@ -52,9 +48,7 @@ class Blockchain:
         :type block: <dict>
         :return: hach
         :rtype: <str>
-        
         """
-
         block_string = json.dumps(block, sort_keys=True).encode()
         return sha256(block_string).hexdigest()
 
@@ -75,8 +69,7 @@ class Blockchain:
         :type proof: <int>
         :return: True si les 4 derniers chiffres sont '0000', sinon False.
         :rtype: <bool>
-        
-        """        
+        """
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
@@ -92,9 +85,7 @@ class Blockchain:
         :type last_proof: <dict>
         :return: Nouvelle preuve de travail.
         :rtype: <int>
-        
         """
-        
         last_proof = last_block['proof']
         
         proof = 0
@@ -113,9 +104,7 @@ class Blockchain:
         :type previous_hash: <str>, optional
         :return: nouveau block
         :rtype: <dict>
-        
         """
-
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
@@ -143,9 +132,7 @@ class Blockchain:
         :type amount: <int>
         :return: L'index du bloc qui contiendra cette nouvelle transaction.
         :rtype: <int>
-        
         """
-
         self.current_transactions.append({
             'sender': sender,
             'recipient': recipient,
@@ -160,8 +147,7 @@ class Blockchain:
 
         :param address: l'adresse IP du node. Ex: 'http://192.168.0.5:5000'
         :type address: <str>
-        
-        """        
+        """
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
     
@@ -178,9 +164,7 @@ class Blockchain:
         :type chain: <list>
         :return: True or false
         :rtype: <bool>
-        
-        """        
-
+        """
         last_block = chain[0]
         current_index = 1
 
@@ -216,9 +200,7 @@ class Blockchain:
 
         :return: True si l'algorithme a trouvé une plus gande chaine, sinon False.
         :rtype: <bool>
-        
         """
-
         neighbours = self.nodes
         new_chain = None
         max_length = len(self.chain)
@@ -241,7 +223,7 @@ class Blockchain:
         return False
 
 ###########################################
-############## lance-requête ##############
+############## LANCE-REQUETE ##############
 ###########################################
 
 # Initialisation du node 
@@ -268,7 +250,6 @@ def mine():
     
     :return: réponse en JSON contenant les informations sur le nouveau block et le hash précédent (immuabilité de la blockchain), et un code 200 OK.
     :rtype: <JSON>
-    
     """
     last_block = blockchain.last_block
     proof = blockchain.proof_of_work(last_block)
@@ -303,7 +284,6 @@ def new_transaction():
     
     :return: réponse en JSON contenant un message de confirmation et un code 201 Created.
     :rtype: <JSON>
-    
     """    
     valeurs = request.get_json()
 
@@ -329,7 +309,6 @@ def full_chain():
 
     :return: réponse en JSON contenant la chaine et sa longueur + code 200 OK
     :rtype: <JSON>
-    
     """    
     reponse = {
         'chain': blockchain.chain,
@@ -348,7 +327,6 @@ def register_nodes():
 
     :return: réponse en JSON contenant un message de confirmation, la liste des nodes et un code 201 Created.
     :rtype: <JSON>
-    
     """    
     values = request.get_json()
 
@@ -374,7 +352,6 @@ def consensus():
 
     :return: réponse en JSON contenant un message spécifiant la chaine faisant autorité, et un code 200 OK.
     :rtype: <JSON>
-    
     """    
     replaced = blockchain.algo_cansensus()
 
@@ -391,4 +368,10 @@ def consensus():
 
     return jsonify(response), 200
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+
+    parser = ArgumentParser()
+    parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
+    args = parser.parse_args()
+    port = args.port
+    
+    app.run(host='0.0.0.0', port=port)
