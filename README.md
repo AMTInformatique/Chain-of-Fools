@@ -12,7 +12,9 @@
   - [Miner un block](#miner-un-block)
   - [Enregistrer des transaction](#enregistrer-des-transaction)
   - [Obtenir la blockchain](#obtenir-la-blockchain)
-- [License](#license)
+  - [Enregistrer un node](#enregistrer-un-node)
+  - [Consensus de la blockchain](#consensus-de-la-blockchain)
+- [License](https://github.com/Sam-prog-sudo/Chain-of-Fools/blob/master/LICENSE)
 ---
 ## Installation
 ### Prérequis
