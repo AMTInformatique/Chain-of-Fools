@@ -105,8 +105,8 @@ Cette liste n'est pas exhaustive:
 - Permettre une saugarde physique de la blockchain.  
 - Stocker d'autres informations sur la blockchain (hors cryptomonnaie).  
 - Améliorer la sécurité des nodes (une vraie passoire...).  
-~~- séparer les views de la logique~~
-~~- Respecter la PEP 8~~
+~~- séparer les views de la logique~~  
+~~- Respecter la PEP 8~~  
 - Laisser le choix sur l'environnement
 ## FAQ
 
