@@ -1,12 +1,9 @@
 import json
-from argparse import ArgumentParser
 from hashlib import sha256
 from time import time
 from urllib.parse import urlparse
-from uuid import uuid4
 
 import requests
-from flask import Flask, jsonify, request
 
 
 class Blockchain:
@@ -30,26 +27,6 @@ class Blockchain:
         :rtype: <dict>
         """
         return self.chain[-1]
-
-    @staticmethod
-    def hachage(block):
-        """
-        hash crée un hachage SHA-256 d'un bloc.
-
-        - Sérialise le <dict: block> en une <str> formatée en JSON,
-        puis encode la <str> en bytes pour être haché.
-        - NB: La <str> doit être ordonnée, selon les clés du <dict: block>,
-        sinon il y aura des hachages incohérents.
-        - Hache la chaine puis renvoie une <str> composée d'hex
-        - NB: sha256 n'est pas le meilleur algo d'hashage.
-
-        :param block: le block
-        :type block: <dict>
-        :return: hach
-        :rtype: <str>
-        """
-        block_string = json.dumps(block, sort_keys=True).encode()
-        return sha256(block_string).hexdigest()
 
     @staticmethod
     def valid_proof(last_proof, proof):
@@ -92,6 +69,26 @@ class Blockchain:
             proof += 1
 
         return proof
+
+    @staticmethod
+    def hachage(block):
+        """
+        hash crée un hachage SHA-256 d'un bloc.
+
+        - Sérialise le <dict: block> en une <str> formatée en JSON,
+        puis encode la <str> en bytes pour être haché.
+        - NB: La <str> doit être ordonnée, selon les clés du <dict: block>,
+        sinon il y aura des hachages incohérents.
+        - Hache la chaine puis renvoie une <str> composée d'hex
+        - NB: sha256 n'est pas le meilleur algo d'hashage.
+
+        :param block: le block
+        :type block: <dict>
+        :return: hach
+        :rtype: <str>
+        """
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return sha256(block_string).hexdigest()
 
     def new_block(self, proof, previous_hash=None,):
         """
@@ -152,8 +149,8 @@ class Blockchain:
 
     def valid_chain(self, chain):
         """
-        valid_chain détermine si une chaine est valide, en vérifiant
-        chaque block.
+        valid_chain détermine si la blockchain courante est valide, en
+        vérifiant chaque block (hash + proof of work).
 
         - Vérifie que 'previous_hash' contenu dans le block courant,
           correspond au hachage du block précédent.
@@ -207,7 +204,10 @@ class Blockchain:
         max_length = len(self.chain)
 
         for node in neighbours:
-            response = requests.get(f'http://{node}/chain')
+            try:
+                response = requests.get(f'http://{node}/chain_of_fools')
+            except requests.exceptions.RequestException as oups:
+                raise SystemExit(oups)
 
             if response.status_code == 200:
                 length = response.json()['length']
@@ -222,12 +222,3 @@ class Blockchain:
             return True
 
         return False
-
-# ##########################################
-# ############# LANCE-REQUETE ##############
-# ##########################################
-
-# Initialisation du node
-
-
-
