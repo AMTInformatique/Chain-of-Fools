@@ -29,13 +29,13 @@ Soyez indulgent.e 😁.
 ---
 ## Introduction
 Cette application permet de:  
-- Créer des nodes (flask, serveur dev --> non-sécurisé)
-- Enregistrer des nodes sur la blockchain  
-- Vérifier la blockchain
-- Mettre à jour la blockchain gràce aux nodes, en trouvant un consensus
-- Miner un block
-- renvoyé toute la chaine
-- Enregistrer un nouvelle transaction sur la blockchain
+- Créer des nodes (flask, serveur dev --> non-sécurisé).  
+- Enregistrer des nodes sur la blockchain.  
+- Vérifier la blockchain.  
+- Mettre à jour la blockchain gràce aux nodes, en trouvant un consensus.  
+- Miner un block.  
+- renvoyé toute la chaine.  
+- Enregistrer un nouvelle transaction sur la blockchain.  
 ## Installation
 ### Prérequis
 
