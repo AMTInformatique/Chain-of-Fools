@@ -115,7 +115,9 @@ Pour s'assurer que le node courant détient la chaine la plus à jour (donc la p
 il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes/resolve`.
 
 ## Améliorations possibles
-Cette liste n'est pas exhaustive:
+Cette liste n'est pas exhaustive:  
+- ~~Séparer les views de la logique~~  
+- ~~(Essayé de) respecter la PEP 8~~  
 - Créer des nodes qui vérifient les transactions.  
 - Gérer les erreurs de 'requests'.
 - Améliorer l'algorithme de travail.  
@@ -123,20 +125,18 @@ Cette liste n'est pas exhaustive:
 - Permettre une saugarde physique de la blockchain.  
 - Stocker d'autres informations sur la blockchain (hors cryptomonnaie).  
 - Améliorer la sécurité des nodes (une vraie passoire...).  
-- ~~Séparer les views de la logique~~  
-- ~~Respecter la PEP 8~~  
 - Obtenir certaines informations de la blockchain (qui a fait quelle transaction, et quand; combien de block ont été miné; etc.)
 - Créer un wallet
-- Créer un interface graphique
+- Créer un interface graphique (legos qui s'imbriquent ?)
 ## FAQ
 
 >Pourquoi une blockchain ?  
 
 [Parce que :)](https://youtu.be/gGAiW5dOnKo)
 
->Euh ... les p'tites blagues dans le code, c'est normal ?  
+>😱https://sametmax.com/😱 ?  
 
-😅  
+😥 oui, je sais ... et nan, ça ne s'écris pas pareil.
 
 ## License
 **[MIT license](http://opensource.org/licenses/mit-license.php)**
