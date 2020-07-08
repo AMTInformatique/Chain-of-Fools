@@ -106,6 +106,7 @@ Cette liste n'est pas exhaustive:
 - Stocker d'autres informations sur la blockchain (hors cryptomonnaie).  
 - Améliorer la sécurité des nodes (une vraie passoire...).
 - Diviser l'API en modules (partie classe/gestion de la chaine, gestion des nodes)
+- mettre en place des changelogs
 
 ## FAQ
 
