@@ -61,7 +61,7 @@ Plusieurs solutions s'offrent à vous (toujours vers le même dossier):
 
 ----
 ## Utilisation
-Lancer un Shell pour la création de nodes puis, lancer Postman pour l'envoie de requêtes.  
+Lancer un Shell pour la création de nodes puis, lancer Postman pour l'envoie et le retour de requêtes.  
 ### Création de node
 Commencer par démarrer au moins un serveur (node):  
 > Par défaut, le numéro de port est 5000  
