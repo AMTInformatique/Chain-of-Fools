@@ -57,7 +57,7 @@ Plusieurs solutions s'offrent à vous (toujours vers le même dossier):
 `https://github.com/Sam-prog-sudo/Chain-of-Fools.git`.  
 - 🍴Forker ce repo.
 >C'est une invitation à la [contribution](#améliorations-possibles)👋
-- Télécharger le repo à cette adresse:  
+- 💾Télécharger le repo à cette adresse:  
 https://github.com/Sam-prog-sudo/Chain-of-Fools/archive/master.zip
 
 
