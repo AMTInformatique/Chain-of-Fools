@@ -1,24 +1,21 @@
-import requests
 import json
 from argparse import ArgumentParser
-
 from hashlib import sha256
-from urllib.parse import urlparse
 from time import time
+from urllib.parse import urlparse
 from uuid import uuid4
+
+import requests
 from flask import Flask, jsonify, request
 
-##########################################
-############ CLASS BLOCKCHAIN ############
-##########################################
 
 class Blockchain:
     """
     Blockchain est la classe mère: elle gère la séquence immuable de blocks.
-    """    
-    def __init__(self): 
+    """
+    def __init__(self):
         self.chain = []
-        self.current_transactions = []    
+        self.current_transactions = []
         # créer le premier block
         self.new_block(proof=1989, previous_hash=1)
         # créer une liste de nodes
@@ -38,12 +35,14 @@ class Blockchain:
     def hachage(block):
         """
         hash crée un hachage SHA-256 d'un bloc.
-        
-        - Sérialise le <dict: block> en une <str> formatée en JSON, puis encode la <str> en bytes pour être haché.
-        - NB: La <str> doit être ordonnée, selon les clés du <dict: block>, sinon il y aura des hachages incohérents.
+
+        - Sérialise le <dict: block> en une <str> formatée en JSON,
+        puis encode la <str> en bytes pour être haché.
+        - NB: La <str> doit être ordonnée, selon les clés du <dict: block>,
+        sinon il y aura des hachages incohérents.
         - Hache la chaine puis renvoie une <str> composée d'hex
         - NB: sha256 n'est pas le meilleur algo d'hashage.
-        
+
         :param block: le block
         :type block: <dict>
         :return: hach
@@ -58,7 +57,7 @@ class Blockchain:
         valid_proof valide la preuve.
         Pour que la preuve soit validée, il faut trouver un nombre j
         tel que le hachage de la chaine (ij) se termine par 4 zéros.
-        
+
         - Encode en bytes la chaine ('dernière_preuve''preuve').
         - Fait du hachi(parmentier) puis la transforme en chaine hexa.
         - Vérifie que le hach termine par 4 zéros.
@@ -87,7 +86,7 @@ class Blockchain:
         :rtype: <int>
         """
         last_proof = last_block['proof']
-        
+
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
             proof += 1
@@ -115,7 +114,7 @@ class Blockchain:
 
         # RàZ de la liste courante des transactions
         self.current_transactions = []
-        
+
         self.chain.append(block)
         return block
 
@@ -150,12 +149,12 @@ class Blockchain:
         """
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
-    
+
     def valid_chain(self, chain):
         """
         valid_chain détermine si une chaine est valide, en vérifiant
         chaque block.
-        
+
         - Vérifie que 'previous_hash' contenu dans le block courant,
           correspond au hachage du block précédent.
         - Vérifie la preuve de travail grace à la méthode valid_proof.
@@ -178,7 +177,7 @@ class Blockchain:
 
             if not self.valid_proof(last_block['proof'], block['proof']):
                 return False
-            
+
             print("\n-----------\n")
             last_block = block
             current_index += 1
@@ -187,18 +186,20 @@ class Blockchain:
 
     def algo_cansensus(self):
         """
-        algo_cansensus est l'algorithme qui permet un consensus sur la blockchain.
-        
+        algo_cansensus est l'algorithme qui permet un consensus
+        sur la blockchain.
+
         La méthode va parcourir tous les nœuds pour trouver la plus longue
         chaine valide du réseau: elle deviendra la chaine par défaut.
         Cette méthode s'initialise sur le nœud courrant.
-        
+
         - Vérifie le statuts des nœuds/nodes du réseau.
-        - Vérifie la validité des chaines présentes, à l'aide de la 
+        - Vérifie la validité des chaines présentes, à l'aide de la
           méthode valid_chain.
         - Stock dans la blockchain la chaine la plus longue.
 
-        :return: True si l'algorithme a trouvé une plus gande chaine, sinon False.
+        :return: True si l'algorithme a trouvé une plus gande chaine,
+        sinon False.
         :rtype: <bool>
         """
         neighbours = self.nodes
@@ -222,156 +223,11 @@ class Blockchain:
 
         return False
 
-###########################################
-############## LANCE-REQUETE ##############
-###########################################
+# ##########################################
+# ############# LANCE-REQUETE ##############
+# ##########################################
 
-# Initialisation du node 
-app = Flask(__name__)
-
-# Générer une adresse unique pour ce nœud
-# uuid4 est globalement plus aléatoire/unique que uuid1
-node_identifier = str(uuid4()).replace('-', '')
-
-# Instantie la Blockchain
-blockchain = Blockchain()
+# Initialisation du node
 
 
-@app.route('/mine', methods=['GET'])
-def mine():
-    """
-    mine permet de miner un nouveau block.
-    Elle est déclenchée par le endpoint /mine (requête GET)
-    
-    - exécute l'algorithme de preuve de travail.
-    - reçoit une récompense (un coin/une pièce) pour avoir trouvé la preuve.
-    - L'expéditeur est "0" pour signifier que c'est le nœud qui a extrait une nouvelle pièce/coin.
-    - Fabrique le nouveau bloc en l'ajoutant à la chaîne
-    
-    :return: réponse en JSON contenant les informations sur le nouveau block et le hash précédent (immuabilité de la blockchain), et un code 200 OK.
-    :rtype: <JSON>
-    """
-    last_block = blockchain.last_block
-    proof = blockchain.proof_of_work(last_block)
 
-    blockchain.new_transaction(
-        sender="0",
-        recipient=node_identifier,
-        amount=1,
-    )
-
-    previous_hash = blockchain.hachage(last_block)
-    block = blockchain.new_block(proof, previous_hash)
-
-    reponse = {
-        'message': "Nouveau block miné",
-        'index': block['index'],
-        'transactions': block['transactions'],
-        'proof': block['proof'],
-        'previous_hash': block['previous_hash'],
-    }
-    return jsonify(reponse), 200
-  
-@app.route('/transactions/new', methods=['POST'])
-def new_transaction():
-    """
-    new_transaction permet d'ajouter les données d'une
-    nouvelle transaction, en format JSON.
-    Elle est déclenchée par le endpoint /transactions/new (requête POST).
-
-    - Vérifie que les valeurs demandée dans la requête sont dans les données envoyées en POST. Renvoie un code 400 Bad Request, le cas échéant.
-    - Créé une nouvelle transaction dans un block
-    
-    :return: réponse en JSON contenant un message de confirmation et un code 201 Created.
-    :rtype: <JSON>
-    """    
-    valeurs = request.get_json()
-
-    demande = ['sender', 'recipient', 'amount']
-    if not all(k in valeurs for k in demande):
-        return 'Valeurs manquantes', 400
-
-    index = blockchain.new_transaction (
-                valeurs['sender'],
-                valeurs['recipient'],
-                valeurs['amount'],
-            )
-
-    reponse = {'message': f'Ajout d\'une nouvelle transaction au block {index}'}
-    return jsonify(reponse), 201
-
-@app.route('/chain_of_fools', methods=['GET'])
-# https://youtu.be/gGAiW5dOnKo
-def full_chain():
-    """
-    full_chain permet d'obtenir toute la chaine et sa longueur.
-    Elle est déclenchée par le endpoint /chain_of_fools (requête GET).
-
-    :return: réponse en JSON contenant la chaine et sa longueur + code 200 OK
-    :rtype: <JSON>
-    """    
-    reponse = {
-        'chain': blockchain.chain,
-        'length': len(blockchain.chain),
-    }
-    return jsonify(reponse), 200
-
-@app.route('/nodes/register', methods=['POST'])
-def register_nodes():
-    """
-    register_nodes permet d'enregistrer au moins un nouveau node, en format JSON.
-    Elle est déclenchée par le endpoint /nodes/register (requête POST).
-    
-    - Vérifie que les valeurs envoyé dans la requête POST existe. Renvoie un code 400 Bad Request, le cas échéant.
-    - enregistre les nodes grace à la méthode register_node
-
-    :return: réponse en JSON contenant un message de confirmation, la liste des nodes et un code 201 Created.
-    :rtype: <JSON>
-    """    
-    values = request.get_json()
-
-    nodes = values.get('nodes')
-    if nodes is None:
-        return "Erreur: Veuillez fournir une liste valide de nœuds", 400
-
-    for node in nodes:
-        blockchain.register_node(node)
-
-    response = {
-        'message': 'Au mois un nouveau node a été ajouté.',
-        'total_nodes': list(blockchain.nodes),
-    }
-    return jsonify(response), 201
-
-
-@app.route('/nodes/resolve', methods=['GET'])
-def consensus():
-    """
-    consensus regarde si la chaine courante fait consensus.
-    Elle est déclenchée par le endpoint /nodes/resolve (requête GET).
-
-    :return: réponse en JSON contenant un message spécifiant la chaine faisant autorité, et un code 200 OK.
-    :rtype: <JSON>
-    """    
-    replaced = blockchain.algo_cansensus()
-
-    if replaced:
-        response = {
-            'message': 'La chaine courante a été remplacée.',
-            'new_chain': blockchain.chain
-        }
-    else:
-        response = {
-            'message': 'La chaine courante fait authorité.',
-            'chain': blockchain.chain
-        }
-
-    return jsonify(response), 200
-if __name__ == '__main__':
-
-    parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=5000, type=int, help='port to listen on')
-    args = parser.parse_args()
-    port = args.port
-    
-    app.run(host='0.0.0.0', port=port)
