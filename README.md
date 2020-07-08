@@ -53,10 +53,12 @@ pip install -r requirements.txt
 ``` 
 ### Code source
 Plusieurs solutions s'offrent à vous (toujours vers le même dossier):  
-- 👯Cloner ce repo sur votre machine local à l'aide de cette adresse: `https://github.com/Sam-prog-sudo/Chain-of-Fools.git`.  
+- 👯Cloner ce repo sur votre machine local à l'aide de cette adresse:  
+`https://github.com/Sam-prog-sudo/Chain-of-Fools.git`.  
 - 🍴Forker ce repo.
 >C'est une invitation à la [contribution](#améliorations-possibles)👋
-- Télécharger le repo à cette adresse: https://github.com/Sam-prog-sudo/Chain-of-Fools/archive/master.zip
+- Télécharger le repo à cette adresse:  
+https://github.com/Sam-prog-sudo/Chain-of-Fools/archive/master.zip
 
 
 ----
@@ -90,7 +92,8 @@ En suivant la nomenclature du format JSON, ajouter dans le `Body` de la requête
 Puis, envoyer la requête `POST` à l'adresse `http://localhost:[numéro-de-port]/transactions/new`. 
 
 ### Obtenir la blockchain
-Pour obtenir toutes les informations stockées sur la blockchain, il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/chain_of_fools`.  
+Pour obtenir toutes les informations stockées sur la blockchain, il suffit d'envoyer une requête `GET` à l'adresse:  
+`http://localhost:5000/chain_of_fools`.  
 
 ### Enregistrer un node
 En suivant la nomenclature du format JSON, ajouter dans le `Body`de la requête:
@@ -101,12 +104,15 @@ En suivant la nomenclature du format JSON, ajouter dans le `Body`de la requête:
 ```
 >NB: il s'agit d'une liste de node à rajouter.  
 
-Pour enregistrer un nouveau node sur le réseau, il faut envoyer la requête `POST` à l'adresse `http://localhost:[numéro-de-port]/transactions/new`.
+Pour enregistrer un nouveau node sur le réseau, il faut envoyer la requête `POST` à l'adresse  
+`http://localhost:[numéro-de-port]/transactions/new`.  
 
 ### Consensus de la blockchain
->Dans le cas où il y aurait plusieurs nodes, cette requête permet d'assurer la validité de la chaine, à l'aide d'un algorithme de consensus.  
+>Dans le cas où il y aurait plusieurs nodes, cette requête permet d'assurer la validité de la chaine,  
+à l'aide d'un algorithme de consensus.  
 
-Pour s'assurer que le node courant détient la chaine la plus à jour (donc la plus longue), il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes/resolve`.
+Pour s'assurer que le node courant détient la chaine la plus à jour (donc la plus longue),  
+il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes/resolve`.
 
 ## Améliorations possibles
 Cette liste n'est pas exhaustive:
