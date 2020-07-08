@@ -104,7 +104,9 @@ Cette liste n'est pas exhaustive:
 - Améliorer l'algorithme de hashage.  
 - Permettre une saugarde physique de la blockchain.  
 - Stocker d'autres informations sur la blockchain (hors cryptomonnaie).  
-- Améliorer la sécurité des nodes (une vraie passoire...).  
+- Améliorer la sécurité des nodes (une vraie passoire...).
+- Diviser l'API en modules (partie classe/gestion de la chaine, gestion des nodes)
+
 ## FAQ
 
 >Pourquoi une blockchaine ?  
