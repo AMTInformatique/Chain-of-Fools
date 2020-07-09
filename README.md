@@ -128,7 +128,7 @@ Pour s'assurer que le node courant détient la chaine la plus à jour (donc la p
 il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes/resolve`.
 
 ## Améliorations possibles
-Cette liste n'est pas exhaustive:  
+Cette liste est non-exhaustive:  
 - ~~Séparer les views de la logique~~  
 - ~~(Essayé de) respecter la PEP 8~~  
 - Mettre en place des test avec pytest.  
