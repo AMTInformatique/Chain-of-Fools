@@ -97,9 +97,9 @@ Pour ce faire, il faut envoyer une requête `GET` à l'adresse `http://localhost
 En suivant la nomenclature du format JSON, ajouter dans le `Body` de la requête:
 ```
 {
- "sender": "adresse de l'émetteur",
- "recipient": "adresse du bénéficiaire",
- "amount": quantité-émise (un entier relatif),
+    "sender": "adresse de l'émetteur",
+    "recipient": "adresse du bénéficiaire",
+    "amount": quantité-émise (un entier relatif),
 }
 ```
 Puis, envoyer la requête `POST` à l'adresse `http://localhost:[numéro-de-port]/transactions/new`. 
