@@ -34,7 +34,7 @@ Cette application permet de:
 - Vérifier la blockchain.  
 - Mettre à jour la blockchain gràce aux nodes, en trouvant un consensus.  
 - Miner un block.  
-- renvoyé toute la chaine.  
+- Renvoyer toute la chaine.  
 - Enregistrer un nouvelle transaction sur la blockchain.  
 ## Installation
 ### Prérequis
