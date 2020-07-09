@@ -119,6 +119,7 @@ Cette liste n'est pas exhaustive:
 - ~~Séparer les views de la logique~~  
 - ~~(Essayé de) respecter la PEP 8~~  
 - Mettre en place des test avec pytest.  
+- Générer une documentation avec sphinx.  
 - Créer des nodes qui vérifient les transactions.  
 - Gérer les erreurs de 'requests'.
 - Améliorer l'algorithme de travail.  
