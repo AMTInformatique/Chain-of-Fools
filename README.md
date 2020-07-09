@@ -118,6 +118,7 @@ il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes
 Cette liste n'est pas exhaustive:  
 - ~~Séparer les views de la logique~~  
 - ~~(Essayé de) respecter la PEP 8~~  
+- Mettre en place des test avec pytest.  
 - Créer des nodes qui vérifient les transactions.  
 - Gérer les erreurs de 'requests'.
 - Améliorer l'algorithme de travail.  
