@@ -130,7 +130,7 @@ il suffit d'envoyer une requête `GET` à l'adresse `http://localhost:5000/nodes
 ## Améliorations possibles
 Cette liste est non-exhaustive:  
 - ~~Séparer les views de la logique~~  
-- ~~(Essayé de) respecter la PEP 8~~  
+- ~~(Essayer de) respecter la PEP 8~~  
 - Mettre en place des test avec pytest.  
 - Générer une documentation avec sphinx.  
 - Créer des nodes qui vérifient les transactions.  
