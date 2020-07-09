@@ -47,6 +47,10 @@ Cette application permet de:
 ```shell
 python3 -m venv /chemin/vers/environnement/virtuel
 ```
+**ou sous windows**  
+```shell
+py -m venv /chemin/vers/environnement/virtuel
+```
 * Installer les [modules requis](https://github.com/Sam-prog-sudo/Chain-of-Fools/blob/master/requirements.txt), dans le même dossier.  
 ```shell
 pip install -r requirements.txt
@@ -64,6 +68,15 @@ https://github.com/Sam-prog-sudo/Chain-of-Fools/archive/master.zip
 ----
 ## Utilisation
 Lancer un Shell pour la création de nodes puis, lancer Postman pour l'envoie et le retour de requêtes.  
+### Lancer l'application  
+A l'aide d'un shell, lancer la commande:
+```shell
+python3 app/main.py
+```
+**ou sous windows**
+```shell
+py app/main.py
+```
 ### Création de node
 Commencer par démarrer au moins un serveur (node):  
 > Par défaut, le numéro de port est 5000  
