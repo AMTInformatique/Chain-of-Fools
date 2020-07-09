@@ -109,16 +109,16 @@ Pour obtenir toutes les informations stockées sur la blockchain, il suffit d'en
 `http://localhost:5000/chain_of_fools`.  
 
 ### Enregistrer un node
-En suivant la nomenclature du format JSON, ajouter dans le `Body`de la requête:
+En suivant la nomenclature du format JSON, ajouter dans le `Body`de la requête. Par exemple:  
 ```JSON
 {
- "nodes": ["adresse du nouveau node"]
+    "nodes": ["http://192.168.1.1", "http://192.168.1.4"]
 }
 ```
 >NB: il s'agit d'une liste de node à rajouter.  
 
 Pour enregistrer un nouveau node sur le réseau, il faut envoyer la requête `POST` à l'adresse  
-`http://localhost:[numéro-de-port]/transactions/new`.  
+`http://0.0.0.0:[numéro-de-port]/nodes/register`.  
 
 ### Consensus de la blockchain
 >Dans le cas où il y aurait plusieurs nodes, cette requête permet d'assurer la validité de la chaine,  
