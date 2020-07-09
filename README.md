@@ -149,7 +149,7 @@ Cette liste est non-exhaustive:
 
 [Parce que :)](https://youtu.be/gGAiW5dOnKo)
 
->😱https://sametmax.com/😱 ?  
+>😱 https://sametmax.com/ 😱 ?  
 
 😥 oui, je sais ... et nan, ça ne s'écris pas pareil.
 
