@@ -139,20 +139,11 @@ Cette liste est non-exhaustive:
 - Améliorer l'algorithme de hashage.  
 - Permettre une saugarde physique de la blockchain.  
 - Stocker d'autres informations sur la blockchain (hors cryptomonnaie).  
-<<<<<<< HEAD
-- Améliorer la sécurité des nodes (une vraie passoire...).
-- Diviser l'API en modules (partie classe/gestion de la chaine, gestion des nodes)
-- mettre en place des changelogs
-
-=======
 - Améliorer la sécurité des nodes (une vraie passoire...).  
-- Obtenir certaines informations de la blockchain (qui a fait quelle transaction, et quand; combien de block ont été miné; etc.)
-- Créer un wallet
-- Créer un interface graphique (legos qui s'imbriquent ?)
-<<<<<<< HEAD
->>>>>>> 64be83a0a32e6e4f88ccfea791f718f24eb96249
-=======
->>>>>>> 64be83a0a32e6e4f88ccfea791f718f24eb96249
+- Obtenir certaines informations de la blockchain (qui a fait quelle transaction, et quand; combien de block ont été miné; etc.)  
+- Créer un wallet  
+- Créer un interface graphique (legos qui s'imbriquent ?)  
+
 ## FAQ
 
 >Pourquoi une blockchain ?  
