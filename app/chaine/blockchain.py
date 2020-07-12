@@ -187,7 +187,8 @@ class Blockchain:
         sur la blockchain.
 
         La méthode va parcourir tous les nœuds pour trouver la plus longue
-        chaine valide du réseau: elle deviendra la chaine par défaut.
+        chaine valide du réseau: elle deviendra la chaine par défaut,
+        sur le nœud courant.
         Cette méthode s'initialise sur le nœud courrant.
 
         - Vérifie le statuts des nœuds/nodes du réseau.
