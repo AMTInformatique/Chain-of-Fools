@@ -149,6 +149,9 @@ Cette liste est non-exhaustive:
 - Obtenir certaines informations de la blockchain (qui a fait quelle transaction, et quand; combien de block ont été miné; etc.)
 - Créer un wallet
 - Créer un interface graphique (legos qui s'imbriquent ?)
+<<<<<<< HEAD
+>>>>>>> 64be83a0a32e6e4f88ccfea791f718f24eb96249
+=======
 >>>>>>> 64be83a0a32e6e4f88ccfea791f718f24eb96249
 ## FAQ
 

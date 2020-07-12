@@ -216,7 +216,7 @@ class Blockchain:
                     break
             else:
                 raise SystemExit("Aïe ...")
-            
+
             if response.status_code == 200:
                 length = response.json()['length']
                 chain = response.json()['chain']
