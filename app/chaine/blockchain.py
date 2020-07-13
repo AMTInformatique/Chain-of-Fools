@@ -46,8 +46,8 @@ class Blockchain:
         :return: True si les 4 derniers chiffres sont '0000', sinon False.
         :rtype: <bool>
         """
-        guess = f'{last_proof}{proof}'.encode()
-        guess_hash = sha256(guess).hexdigest()
+        guess_bytes = f'{last_proof}{proof}'.encode()
+        guess_hash = sha256(guess_bytes).hexdigest()
         return guess_hash[:4] == "0000"
 
     def proof_of_work(self, last_block):
@@ -87,8 +87,8 @@ class Blockchain:
         :return: hach
         :rtype: <str>
         """
-        block_string = json.dumps(block, sort_keys=True).encode()
-        return sha256(block_string).hexdigest()
+        block_bytes = json.dumps(block, sort_keys=True).encode()
+        return sha256(block_bytes).hexdigest()
 
     def new_block(self, proof, previous_hash=None,):
         """
